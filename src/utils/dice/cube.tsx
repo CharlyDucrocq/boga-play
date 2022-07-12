@@ -14,18 +14,19 @@ type Position = {
 
 interface CubeProps {
   size?: number;
-  init?: Position;
-  move?: (prev: Position) => Position
+  style?: Position;
 }
 
 const initFaceStyleFactory: (r: number) => CSSProperties[] = (r) => ([
   {
     background: 'red',
-    transform: `translate3d(0,0,${r}px)`,
+    xyz: [10, 20, r],
+    perspective: r
   },
   {
     background: 'pink',
-    transform: `translate3d(0,0,-${r}px)`,
+    xyz: [10, 20, -r],
+    perspective: r
   },
   {
     background: 'blue',
@@ -49,10 +50,10 @@ const initFaceStyleFactory: (r: number) => CSSProperties[] = (r) => ([
   },
 ])
 
-export const Cube: (props: CubeProps, context?: any) => ReactElement<any, any> & { click: () => void } | null = (props) => {
+export const Cube: FC<CubeProps> = (props) => {
   const {size = 50} = props;
   const initFacesStyles = initFaceStyleFactory(size);
-  const [facesStyles, _faceApi] = useSprings<UseSpringProps>(initFacesStyles.length,(idx) => ({
+  const facesStyles = useSprings<UseSpringProps>(initFacesStyles.length,initFacesStyles.map((face, idx) => ({
       position: 'absolute',
       left: -size,
       top: -size,
@@ -63,30 +64,14 @@ export const Cube: (props: CubeProps, context?: any) => ReactElement<any, any> &
       width: size*2,
       height: size*2,
       transform: `translate3d(0,0,${size*(idx*2-1)}px)`,
-    ...initFacesStyles[idx]
-    }),
+      ...face
+    })),
   )
-  const [style, allApi] = useSpring<CSSProperties>(() => ({
-      y: 100,
-      position: 'absolute',
-      rotateX: 45,
-      rotateY: 0,
-      rotateZ: 45,
-      transformStyle: 'preserve-3d',
-    }),
-  )
-  const result =(
-    <Box>
-      <Button onClick={() => {
-        allApi.start(() => ({rotateY: 20+style.rotateY.get()}))
-      }} label={'test'}/>
-      <animated.div style={style}>
-        { facesStyles.map(style => (<animated.div style={style}/>))}
-      </animated.div>
-    </Box>
+  return (
+    <animated.div {...props} style={{...props.style, transformStyle: 'preserve-3d'}} >
+      { facesStyles.map(style => (<animated.div style={style}/>))}
+    </animated.div>
   );
-
-  return {...result, click: () => {}};
 }
 
 export default Cube;
