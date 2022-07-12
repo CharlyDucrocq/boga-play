@@ -20,12 +20,12 @@ interface CubeProps {
 const initFaceStyleFactory: (r: number) => CSSProperties[] = (r) => ([
   {
     background: 'red',
-    xyz: [10, 20, r],
+    transform: `translate3d(0,0,${r}px)`,
     perspective: r
   },
   {
     background: 'pink',
-    xyz: [10, 20, -r],
+    transform: `translate3d(0,0,-${r}px)`,
     perspective: r
   },
   {
