@@ -29,7 +29,21 @@ export const Dice: FC<DiceProps> = (props) => {
       }
     })
   )
-
+  const [bounce, bounceApi] = useSpring(() => ({
+      from: {
+        z: 1000,
+        perspective: 1000
+      },
+      to: {
+        z: 0,
+        perspective: 1000
+      },
+      config: {
+        duration: 2000,
+        easing: easings.easeOutBounce,
+      }
+    })
+  )
   return (
     <Box>
       <Button onClick={() => {
@@ -38,7 +52,7 @@ export const Dice: FC<DiceProps> = (props) => {
           rotateY: 20+fromAToB.rotateY.get()
         }))
       }} label={'test'}/>
-      <Cube style={{...fromAToB}}/>
+      <Cube style={{...fromAToB, ...bounce}}/>
     </Box>
   );
 }

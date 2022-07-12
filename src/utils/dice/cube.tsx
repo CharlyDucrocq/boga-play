@@ -20,32 +20,32 @@ interface CubeProps {
 const initFaceStyleFactory: (r: number) => CSSProperties[] = (r) => ([
   {
     background: 'red',
-    transform: `translate3d(0,0,${r}px)`,
+    z: r,
     perspective: r
   },
   {
     background: 'pink',
-    transform: `translate3d(0,0,-${r}px)`,
+    z: -r,
     perspective: r
   },
   {
     background: 'blue',
-    transform: `translate3d(${r}px,0,0)`,
+    x: r,
     rotateY: 90,
   },
   {
     background: 'lightblue',
-    transform: `translate3d(-${r}px,0,0)`,
+    x: -r,
     rotateY: 90,
   },
   {
     background: 'green',
-    transform: `translate3d(0,${r}px,0)`,
+    y: r,
     rotateX: 90,
   },
   {
     background: 'yellow',
-    transform: `translate3d(0,-${r}px,0)`,
+    y: -r,
     rotateX: 90,
   },
 ])
@@ -63,7 +63,6 @@ export const Cube: FC<CubeProps> = (props) => {
       backgroundColor: '#fff',
       width: size*2,
       height: size*2,
-      transform: `translate3d(0,0,${size*(idx*2-1)}px)`,
       ...face
     })),
   )
