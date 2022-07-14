@@ -1,7 +1,6 @@
-import { CSSProperties, FC } from 'react';
+import { FC } from 'react';
 import { Box, Button } from 'grommet';
-import { useSpring, animated, useSprings, SpringValue, easings } from 'react-spring';
-import { UseSpringProps } from '@react-spring/core/dist/declarations/src/hooks/useSpring';
+import { useSpring, animated, easings } from 'react-spring';
 import Cube from './cube';
 
 interface DiceProps {
@@ -31,10 +30,12 @@ export const Dice: FC<DiceProps> = (props) => {
   )
   const [bounce, bounceApi] = useSpring(() => ({
       from: {
+        x: 500,
         z: 1000,
         perspective: 1000
       },
       to: {
+        x: 0,
         z: 0,
         perspective: 1000
       },
@@ -44,15 +45,29 @@ export const Dice: FC<DiceProps> = (props) => {
       }
     })
   )
+
+  const valueGot = Math.floor(Math.random()*6);
+  console.debug('DICE - valueGot:', valueGot)
+  const path = './imgs/simple'
+  const faces = [
+    require(path+'/face_1.png'),
+    require(path+'/face_2.png'),
+    require(path+'/face_3.png'),
+    require(path+'/face_6.png'),
+    require(path+'/face_5.png'),
+    require(path+'/face_4.png'),
+  ];
+
+  const faceMapping = [0,1,2,5,4,3]
+  for(let i=0;i<faceMapping[valueGot];i++){
+    faces.push(faces.shift())
+  }
+
   return (
     <Box>
-      <Button onClick={() => {
-        allApi.start(() => ({
-          y: 20+fromAToB.y.get(),
-          rotateY: 20+fromAToB.rotateY.get()
-        }))
-      }} label={'test'}/>
-      <Cube style={{...fromAToB, ...bounce}}/>
+      <animated.div style={bounce}>
+        <Cube style={{...fromAToB}} faces={faces.map((src) => ({src}))}/>
+      </animated.div>
     </Box>
   );
 }
